@@ -3,131 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Diary - Your Personal Media Tracker</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="description" content="Track your daily text, audio, and video consumption with this offline-first media diary">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Media Diary">
-    
-    <!-- PWA Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="./manifest.json">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="./css/styles.css">
-    
-    <!-- Offline Fallback -->
-    <link rel="prefetch" href="./offline.html">
+    <title>Media Diary - Track Your Daily Media Consumption</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .form-section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .entries-section {
+            padding: 30px;
+        }
+        
+        .entries-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.8rem;
+        }
+        
+        .entry {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .entry-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .entry-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .entry-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .entry-meta span {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        
+        .entry-notes {
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        
+        .media-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .media-type.text {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .media-type.audio {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .media-type.video {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .media-type.image {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .no-entries {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .entry-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .entry-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Install Banner -->
-    <div id="installBanner" class="install-banner hidden" role="banner" aria-labelledby="install-title">
-        <div class="install-banner-content">
-            <h2 id="install-title">Install Media Diary</h2>
-            <p>Get quick access and offline functionality by installing this app.</p>
-            <div class="install-banner-actions">
-                <button id="installBtn" class="btn btn-primary">Install</button>
-                <button id="dismissBtn" class="btn btn-secondary">Dismiss</button>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Media Diary</h1>
+            <p>Track your daily text, audio, and video consumption</p>
+        </div>
+        
+        <div class="form-section">
+            <form id="entryForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mediaType">Media Type</label>
+                        <select id="mediaType" name="mediaType" required>
+                            <option value="">Select type...</option>
+                            <option value="text">Text (Article, Book, Blog)</option>
+                            <option value="audio">Audio (Podcast, Music, Audiobook)</option>
+                            <option value="video">Video (Movie, TV Show, YouTube)</option>
+                            <option value="image">Image (Photo, Infographic)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" placeholder="What did you consume?" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="creator">Creator/Author</label>
+                        <input type="text" id="creator" name="creator" placeholder="Who created it?">
+                    </div>
+                    <div class="form-group">
+                        <label for="sourceUrl">Source URL (optional)</label>
+                        <input type="url" id="sourceUrl" name="sourceUrl" placeholder="https://...">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Notes & Thoughts</label>
+                    <textarea id="notes" name="notes" placeholder="What did you think? Key takeaways? Ratings?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="attachments">Attachments (optional)</label>
+                    <input type="file" id="attachments" name="attachments" multiple accept="image/*,audio/*,video/*,.pdf,.txt,.doc,.docx">
+                </div>
+                
+                <button type="submit" class="btn">Add Entry</button>
+            </form>
+        </div>
+        
+        <div class="entries-section">
+            <h2>Your Media Entries</h2>
+            <div id="entriesList">
+                <div class="no-entries">No entries yet. Add your first media consumption above!</div>
             </div>
         </div>
     </div>
-
-    <!-- Main App Container -->
-    <div id="app" class="app-container">
-        <!-- Header Navigation -->
-        <header class="header" role="banner">
-            <div class="header-content">
-                <h1 class="app-title">
-                    <span class="icon">📚</span>
-                    Media Diary
-                </h1>
-                <nav class="header-nav" role="navigation" aria-label="Main navigation">
-                    <button class="nav-btn" data-page="today" aria-label="Today's entries">
-                        <span class="icon">📅</span>
-                        <span class="nav-text">Today</span>
-                    </button>
-                    <button class="nav-btn" data-page="all" aria-label="All entries">
-                        <span class="icon">📋</span>
-                        <span class="nav-text">All</span>
-                    </button>
-                    <button class="nav-btn" data-page="calendar" aria-label="Calendar view">
-                        <span class="icon">🗓️</span>
-                        <span class="nav-text">Calendar</span>
-                    </button>
-                    <button class="nav-btn" data-page="stats" aria-label="Statistics">
-                        <span class="icon">📊</span>
-                        <span class="nav-text">Stats</span>
-                    </button>
-                    <button class="nav-btn" data-page="settings" aria-label="Settings">
-                        <span class="icon">⚙️</span>
-                        <span class="nav-text">Settings</span>
-                    </button>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <main id="mainContent" class="main-content" role="main">
-            <!-- Loading State -->
-            <div id="loadingState" class="loading-state">
-                <div class="loading-spinner" role="status" aria-label="Loading">
-                    <div class="spinner"></div>
-                    <p>Loading your media diary...</p>
-                </div>
-            </div>
-
-            <!-- Page Content will be dynamically loaded here -->
-        </main>
-
-        <!-- Floating Action Button -->
-        <button id="fabAdd" class="fab" aria-label="Add new entry" title="Add new entry">
-            <span class="icon">➕</span>
-        </button>
-    </div>
-
-    <!-- Offline Indicator -->
-    <div id="offlineIndicator" class="offline-indicator hidden" role="alert">
-        <span class="icon">📴</span>
-        <span>You're offline. Changes will sync when reconnected.</span>
-    </div>
-
-    <!-- Toast Notifications -->
-    <div id="toastContainer" class="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
-
-    <!-- Scripts -->
-    <script src="./js/utils.js"></script>
-    <script src="./js/storage.js"></script>
-    <script src="./js/router.js"></script>
-    <script src="./js/pages/today.js"></script>
-    <script src="./js/pages/all.js"></script>
-    <script src="./js/pages/calendar.js"></script>
-    <script src="./js/pages/stats.js"></script>
-    <script src="./js/pages/entry-detail.js"></script>
-    <script src="./js/pages/entry-form.js"></script>
-    <script src="./js/pages/settings.js"></script>
-    <script src="./js/app.js"></script>
     
-    <!-- Service Worker Registration -->
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
+        // Media diary functionality
+        class MediaDiary {
+            constructor() {
+                this.entries = this.loadEntries();
+                this.form = document.getElementById('entryForm');
+                this.entriesList = document.getElementById('entriesList');
+                
+                this.init();
+            }
+            
+            init() {
+                // Set today's date as default
+                document.getElementById('date').valueAsDate = new Date();
+                
+                // Bind form submission
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                
+                // Render existing entries
+                this.renderEntries();
+            }
+            
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this.form);
+                const entry = {
+                    id: Date.now(),
+                    date: formData.get('date'),
+                    title: formData.get('title'),
+                    mediaType: formData.get('mediaType'),
+                    creator: formData.get('creator'),
+                    sourceUrl: formData.get('sourceUrl'),
+                    notes: formData.get('notes'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Handle attachments (in a real app, you'd upload these)
+                const attachments = formData.get('attachments');
+                if (attachments && attachments.size > 0) {
+                    entry.attachments = [{
+                        name: attachments.name,
+                        size: attachments.size,
+                        type: attachments.type
+                    }];
+                }
+                
+                this.addEntry(entry);
+                this.form.reset();
+                document.getElementById('date').valueAsDate = new Date();
+            }
+            
+            addEntry(entry) {
+                this.entries.unshift(entry);
+                this.saveEntries();
+                this.renderEntries();
+            }
+            
+            loadEntries() {
+                const stored = localStorage.getItem('mediaDiaryEntries');
+                return stored ? JSON.parse(stored) : [];
+            }
+            
+            saveEntries() {
+                localStorage.setItem('mediaDiaryEntries', JSON.stringify(this.entries));
+            }
+            
+            renderEntries() {
+                if (this.entries.length === 0) {
+                    this.entriesList.innerHTML = '<div class="no-entries">No entries yet. Add your first media consumption above!</div>';
+                    return;
+                }
+                
+                this.entriesList.innerHTML = this.entries.map(entry => this.renderEntry(entry)).join('');
+            }
+            
+            renderEntry(entry) {
+                const date = new Date(entry.date).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                const sourceLink = entry.sourceUrl ? 
+                    `<span><strong>Source:</strong> <a href="${entry.sourceUrl}" target="_blank" rel="noopener">Link</a></span>` : '';
+                
+                const attachments = entry.attachments ? 
+                    `<span><strong>Attachments:</strong> ${entry.attachments.map(a => a.name).join(', ')}</span>` : '';
+                
+                return `
+                    <div class="entry">
+                        <div class="entry-header">
+                            <div class="entry-title">${entry.title}</div>
+                            <div class="entry-date">${date}</div>
+                        </div>
+                        <div class="entry-meta">
+                            <span class="media-type ${entry.mediaType}">${entry.mediaType}</span>
+                            ${entry.creator ? `<span><strong>Creator:</strong> ${entry.creator}</span>` : ''}
+                            ${sourceLink}
+                            ${attachments}
+                        </div>
+                        ${entry.notes ? `<div class="entry-notes">${entry.notes}</div>` : ''}
+                    </div>
+                `;
+            }
         }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new MediaDiary();
+        });
     </script>
 </body>
 </html>
