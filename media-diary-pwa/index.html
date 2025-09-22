@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Diary - Your Personal Media Tracker</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Track your daily text, audio, and video consumption with this offline-first media diary">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Media Diary">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/styles.css">
+    
+    <!-- Offline Fallback -->
+    <link rel="prefetch" href="./offline.html">
+</head>
+<body>
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner hidden" role="banner" aria-labelledby="install-title">
+        <div class="install-banner-content">
+            <h2 id="install-title">Install Media Diary</h2>
+            <p>Get quick access and offline functionality by installing this app.</p>
+            <div class="install-banner-actions">
+                <button id="installBtn" class="btn btn-primary">Install</button>
+                <button id="dismissBtn" class="btn btn-secondary">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container">
+        <!-- Header Navigation -->
+        <header class="header" role="banner">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="icon">📚</span>
+                    Media Diary
+                </h1>
+                <nav class="header-nav" role="navigation" aria-label="Main navigation">
+                    <button class="nav-btn" data-page="today" aria-label="Today's entries">
+                        <span class="icon">📅</span>
+                        <span class="nav-text">Today</span>
+                    </button>
+                    <button class="nav-btn" data-page="all" aria-label="All entries">
+                        <span class="icon">📋</span>
+                        <span class="nav-text">All</span>
+                    </button>
+                    <button class="nav-btn" data-page="calendar" aria-label="Calendar view">
+                        <span class="icon">🗓️</span>
+                        <span class="nav-text">Calendar</span>
+                    </button>
+                    <button class="nav-btn" data-page="stats" aria-label="Statistics">
+                        <span class="icon">📊</span>
+                        <span class="nav-text">Stats</span>
+                    </button>
+                    <button class="nav-btn" data-page="settings" aria-label="Settings">
+                        <span class="icon">⚙️</span>
+                        <span class="nav-text">Settings</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="mainContent" class="main-content" role="main">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="loading-spinner" role="status" aria-label="Loading">
+                    <div class="spinner"></div>
+                    <p>Loading your media diary...</p>
+                </div>
+            </div>
+
+            <!-- Page Content will be dynamically loaded here -->
+        </main>
+
+        <!-- Floating Action Button -->
+        <button id="fabAdd" class="fab" aria-label="Add new entry" title="Add new entry">
+            <span class="icon">➕</span>
+        </button>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator hidden" role="alert">
+        <span class="icon">📴</span>
+        <span>You're offline. Changes will sync when reconnected.</span>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+    <!-- Scripts -->
+    <script src="./js/utils.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/router.js"></script>
+    <script src="./js/pages/today.js"></script>
+    <script src="./js/pages/all.js"></script>
+    <script src="./js/pages/calendar.js"></script>
+    <script src="./js/pages/stats.js"></script>
+    <script src="./js/pages/entry-detail.js"></script>
+    <script src="./js/pages/entry-form.js"></script>
+    <script src="./js/pages/settings.js"></script>
+    <script src="./js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
